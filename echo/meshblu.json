@@ -1,0 +1,27 @@
+﻿{
+    "port": 443,
+    "serverString": "wss://meshblu.octoblu.com",
+    "logLevel": "debug",
+    "logFile": "somefile.log",
+    "consoleLogLevel": "info",
+    "deviceName": "Test Listener A",
+    "uuid": "195aaa60-d890-11e4-8055-8be58ae22b8a",
+    "token": "ccc41c690db63853a5acedc52238c8531d3e36a1",
+    "targetName": "Laptop_cmdblu",
+    "target": "c37dc860-d3d6-11e4-9447-69210ed19468",
+
+    "glossary": {
+        "title": "the glossary",
+        "GlossDiv": {
+            "title": "serverString",
+            "GlossList": {
+                "GlossEntry": {
+                    "GlossDef": {
+                        "para": "'wss://meshblu.octoblu.com' or 'ws://meshblu.octoblu.com'  (secure sockets or sockets)"
+                    }
+                }
+            }
+        }
+    }
+
+}
