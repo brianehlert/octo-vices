@@ -1,0 +1,30 @@
+﻿{
+    "port": 443,
+    "serverString": "wss://meshblu.octoblu.com",
+    "logLevel": "debug",
+    "logFile": "somefile.log",
+    "consoleLogLevel": "info",
+    "deviceName": "EventHubForwarder",
+    "uuid": "195aaa60-d890-11e4-8055-8be58ae22b8a",
+    "token": "ccc41c690db63853a5acedc52238c8531d3e36a1",
+    "serviceBusNameSpace": "octodemo",
+    "eventHubName": "demo1",
+    "thisDeviceName": "forwarder",
+    "eventHubAccessPolicyName": "sender",
+    "eventHubAccessPolicyKey": "wWC2MvBxFBVfFWYJWZNF8IhHN55yGzq8jFamYfdIWeA=",
+
+    "glossary": {
+        "title": "the glossary",
+        "GlossDiv": {
+            "title": "serverString",
+            "GlossList": {
+                "GlossEntry": {
+                    "GlossDef": {
+                        "para": "'wss://meshblu.octoblu.com' or 'ws://meshblu.octoblu.com'  (secure sockets or sockets)"
+                    }
+                }
+            }
+        }
+    }
+
+}
