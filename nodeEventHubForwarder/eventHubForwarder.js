@@ -67,7 +67,7 @@ function forward(message) {
     };
 
     logger.log('info', 'Forwarding message to: ' + my_uri);
-    logger.log('debug', message);
+    logger.log('info', message);
 
     var req = https.request(options, function (res) {
         logger.log('info', 'statusCode: ' + res.statusCode);
@@ -79,7 +79,7 @@ function forward(message) {
     });
 
     req.on('error', function (e) {
-        logger.log(error(e));
+        logger.log('info', error(e));
     });
 
     req.write(message);
