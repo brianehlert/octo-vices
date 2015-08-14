@@ -67,7 +67,7 @@ function forward(message) {
     };
 
     logger.log('info', 'Forwarding message to: ' + my_uri);
-    logger.log('info', message);
+    logger.log('info', options);
 
     var req = https.request(options, function (res) {
         logger.log('info', 'statusCode: ' + res.statusCode);
@@ -169,7 +169,7 @@ socket.on('connect', function () {
 
             
             // instant send
-            //pong(message, moment().format("HH:mm:ssS"))
+            //forward(message)
 
         });
 
