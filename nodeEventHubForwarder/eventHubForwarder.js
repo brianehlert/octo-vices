@@ -28,10 +28,6 @@ var my_key = config.eventHubAccessPolicyKey;
 // Full Event Hub publisher URI
 var my_uri = 'https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages';
 
-// connect to Meshblu instance
-socket = io.connect(config.serverString, {
-    port: config.port
-});
 
 // the functions
 
@@ -112,6 +108,12 @@ function create_sas_token(uri, key_name, key) {
 
 // the main
 
+// connect to Meshblu instance
+socket = io.connect(config.serverString, {
+    port: config.port
+});
+
+// generate the token
 var my_sas = create_sas_token(my_uri, my_key_name, my_key)
 
 console.log(my_sas);
