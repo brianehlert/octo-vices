@@ -67,7 +67,6 @@ function forward(message) {
     };
 
     logger.log('info', 'Forwarding message to: ' + my_uri);
-    logger.log('info', options);
 
     var req = https.request(options, function (res) {
         logger.log('info', 'statusCode: ' + res.statusCode);
@@ -163,14 +162,43 @@ socket.on('connect', function () {
             logger.log('info', 'message received from: ', message.fromUuid);
             logger.log('debug', 'message received: ', message);
 
+            /*
             wait.launchFiber(function () {
                 waiting(message);
             });
-
+            */
             
             // instant send
             //forward(message)
+            var options = {
+                hostname: config.serviceBusNameSpace + '.servicebus.windows.net',
+                port: 443,
+                path: '/' + config.eventHubName + '/publishers/' + config.thisDeviceName + '/messages',
+                method: 'POST',
+                headers: {
+                    'Authorization': my_sas,
+                    'Content-Length': message.length,
+                    'Content-Type': 'application/atom+xml;type=entry;charset=utf-8'
+                }
+            };
 
+            logger.log('info', 'Forwarding message to: ' + my_uri);
+
+            var req = https.request(options, function (res) {
+                logger.log('info', 'statusCode: ' + res.statusCode);
+                logger.log('info', 'headers: ' + res.headers);
+
+                res.on('data', function (d) {
+                    process.stdout.write(d);
+                });
+            });
+
+            req.on('error', function (e) {
+                logger.log('info', error(e));
+            });
+
+            req.write(message);
+            req.end();
         });
 
     });
