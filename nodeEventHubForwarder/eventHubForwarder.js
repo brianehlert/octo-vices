@@ -10,8 +10,8 @@ var devicename = 'forwarder';
 var payload = '{\"Temperature\":\"37.0\",\"Humidity\":\"0.4\"}';
 
 // Shared access key (from Event Hub configuration)
-var my_key_name = 'send';
-var my_key = 'key';
+var my_key_name = 'sender';
+var my_key = 'wWC2MvBxFBVfFWYJWZNF8IhHN55yGzq8jFamYfdIWeA=';
 
 // Full Event Hub publisher URI
 var my_uri = 'https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages';
