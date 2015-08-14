@@ -57,11 +57,11 @@ function pong(message, receiveTime) {
 */
 
 // Send the message to the Event Hub
-function forward(message, namespace, hubname, devicename, my_sas) {
+function forward(message) {
     var options = {
-        hostname: namespace + '.servicebus.windows.net',
+        hostname: config.serviceBusNameSpace + '.servicebus.windows.net',
         port: 443,
-        path: '/' + hubname + '/publishers/' + devicename + '/messages',
+        path: '/' + config.eventHubName + '/publishers/' + config.thisDeviceName + '/messages',
         method: 'POST',
         headers: {
             'Authorization': my_sas,
@@ -91,7 +91,7 @@ function forward(message, namespace, hubname, devicename, my_sas) {
 }
 
 function waiting(message) {
-    wait.for(function () { setTimeout(function () { forward(message, namespace, hubname, devicename, my_sas) }) });
+    wait.for(function () { setTimeout(function () { forward(message) }) });
 }
 
 // Create a SAS token
