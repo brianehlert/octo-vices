@@ -57,7 +57,7 @@ function pong(message, receiveTime) {
 */
 
 // Send the message to the Event Hub
-function forward(message) {
+function forward(message, namespace, hubname, devicename, my_sas) {
     var options = {
         hostname: namespace + '.servicebus.windows.net',
         port: 443,
@@ -70,7 +70,7 @@ function forward(message) {
         }
     };
 
-    logger.log('info', 'Forwarding message to: ' + hostname + path);
+    logger.log('info', 'Forwarding message to: ' + my_uri);
     logger.log('debug', message);
 
     var req = https.request(options, function (res) {
@@ -91,7 +91,7 @@ function forward(message) {
 }
 
 function waiting(message) {
-    wait.for(function () { setTimeout(function () { forward(message) }) });
+    wait.for(function () { setTimeout(function () { forward(message, namespace, hubname, devicename, my_sas) }) });
 }
 
 // Create a SAS token
