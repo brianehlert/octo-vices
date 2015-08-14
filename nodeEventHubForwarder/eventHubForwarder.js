@@ -112,7 +112,6 @@ function create_sas_token(uri, key_name, key) {
     return token;
 }
 
-// the main
 
 // connect to Meshblu instance
 socket = io.connect(config.serverString, {
@@ -123,6 +122,22 @@ socket = io.connect(config.serverString, {
 var my_sas = create_sas_token(my_uri, my_key_name, my_key)
 
 console.log(my_sas);
+
+// Event Hub connection options
+var hubOptions = {
+    hostname: config.serviceBusNameSpace + '.servicebus.windows.net',
+    port: 443,
+    path: '/' + config.eventHubName + '/publishers/' + config.thisDeviceName + '/messages',
+    method: 'POST',
+    headers: {
+        'Authorization': my_sas,
+        'Content-Length': message.length,
+        'Content-Type': 'application/atom+xml;type=entry;charset=utf-8'
+    }
+};
+
+
+// the main
 
 socket.on('connect', function () {
     logger.log('info', 'Requesting websocket connection to Meshblu');
@@ -170,21 +185,10 @@ socket.on('connect', function () {
             
             // instant send
             //forward(message)
-            var options = {
-                hostname: config.serviceBusNameSpace + '.servicebus.windows.net',
-                port: 443,
-                path: '/' + config.eventHubName + '/publishers/' + config.thisDeviceName + '/messages',
-                method: 'POST',
-                headers: {
-                    'Authorization': my_sas,
-                    'Content-Length': message.length,
-                    'Content-Type': 'application/atom+xml;type=entry;charset=utf-8'
-                }
-            };
 
             logger.log('info', 'Forwarding message to: ' + my_uri);
 
-            var req = https.request(options, function (res) {
+            var req = https.request(hubOptions, function (res) {
                 logger.log('info', 'statusCode: ' + res.statusCode);
                 logger.log('info', 'headers: ' + res.headers);
 
