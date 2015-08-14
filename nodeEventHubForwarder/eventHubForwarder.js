@@ -86,9 +86,11 @@ function forward(message) {
     req.end();
 }
 
+/*
 function waiting(message) {
-    wait.for(function () { setTimeout(function () { forward(message) }) });
+    wait.for(function () { setTimeout(function () { forward(message) }, 0) });
 }
+*/
 
 // Create a SAS token
 // See http://msdn.microsoft.com/library/azure/dn170477.aspx
@@ -157,7 +159,7 @@ socket.on('connect', function () {
             logger.log('debug', 'message received: ', message);
 
             wait.launchFiber(function () {
-                waiting(message);
+                forward(message);
             });
 
             
