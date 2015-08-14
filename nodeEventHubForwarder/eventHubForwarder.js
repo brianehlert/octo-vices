@@ -70,8 +70,8 @@ function forward(message) {
     logger.log('debug', message);
 
     var req = https.request(options, function (res) {
-        logger.log("statusCode: ", res.statusCode);
-        logger.log("headers: ", res.headers);
+        logger.log('info', 'statusCode: ' + res.statusCode);
+        logger.log('info', 'headers: ' + res.headers);
 
         res.on('data', function (d) {
             process.stdout.write(d);
@@ -79,7 +79,7 @@ function forward(message) {
     });
 
     req.on('error', function (e) {
-        logger.error(e);
+        logger.log(error(e));
     });
 
     req.write(message);
