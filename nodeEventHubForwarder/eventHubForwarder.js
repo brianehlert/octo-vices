@@ -181,7 +181,7 @@ socket.on('connect', function () {
                 headers: {
                     'Authorization': my_sas,
                     'Content-Length': message.length,
-                    'Content-Type': 'application/atom+json;type=entry;charset=utf-8'
+                    'Content-Type': 'application/json;type=entry;charset=utf-8'
                 }
             };
 
@@ -200,7 +200,7 @@ socket.on('connect', function () {
                 logger.log('info', error(e));
             });
 
-            req.write(message);
+            req.write(JSON.stringify(message));
             req.end();
         });
 
