@@ -9,7 +9,7 @@
     "token": "b485acd3fdddaafadd81b8c4ebdecc4672a94c2c",
     "serviceBusNameSpace": "octodemo",
     "eventHubName": "demo1",
-    "thisDeviceName": "forwarder",
+    "thisDeviceName": "forwarder1",
     "eventHubAccessPolicyName": "sender",
     "eventHubAccessPolicyKey": "wWC2MvBxFBVfFWYJWZNF8IhHN55yGzq8jFamYfdIWeA=",
 
