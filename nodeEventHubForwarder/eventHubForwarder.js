@@ -181,7 +181,7 @@ socket.on('connect', function () {
                 headers: {
                     'Authorization': my_sas,
                     'Content-Length': message.length,
-                    'Content-Type': 'application/atom+xml;type=entry;charset=utf-8'
+                    'Content-Type': 'application/atom+json;type=entry;charset=utf-8'
                 }
             };
 
