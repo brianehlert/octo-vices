@@ -28,32 +28,10 @@ var my_key = config.eventHubAccessPolicyKey;
 // Full Event Hub publisher URI
 var my_uri = 'https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages';
 
-
 // the functions
 
-// forward the received message using the target with time and info
-/*
-function pong(message, receiveTime) {
-    logger.log('info', 'Sending message to: ' + message.payload.target);
-
-    socket.emit('message', {
-        "devices" : message.payload.target,
-        "payload" : {
-            "origionalMessage" : message.payload,
-            "origionalDevice" : message.fromUuid,
-            "receiveTime" : receiveTime,
-            "timeSent" : moment().format("HH:mm:ssS"),
-            "dateSent": moment().format("YYYYMMDD"),
-            "fromDevice": config.deviceName,
-            //"target" : message.payload.target
-        }
-    });
-    logger.log('debug', message);
-}
-*/
-
 // Send the message to the Event Hub
-function forward(message) {
+function forward(forwardMess) {
     var options = {
         hostname: config.serviceBusNameSpace + '.servicebus.windows.net',
         port: 443,
@@ -61,8 +39,8 @@ function forward(message) {
         method: 'POST',
         headers: {
             'Authorization': my_sas,
-            'Content-Length': message.length,
-            'Content-Type': 'application/atom+xml;type=entry;charset=utf-8'
+            'Content-Length': forwardMess.length,
+            'Content-Type': 'application/json;type=entry;charset=utf-8'
         }
     };
 
@@ -81,15 +59,15 @@ function forward(message) {
         logger.log('info', error(e));
     });
 
-    req.write(message);
+    req.write(forwardMess);
     req.end();
 }
 
-function waiting(message) {
+function waiting(waitingMess) {
     logger.log('info', 'fiber start');
     wait.for(function () {
         setTimeout(function () {
-            forward(message);
+            forward(waitingMess);
         }, 5000);
 
     });
@@ -112,7 +90,6 @@ function create_sas_token(uri, key_name, key) {
     return token;
 }
 
-
 // connect to Meshblu instance
 socket = io.connect(config.serverString, {
     port: config.port
@@ -120,7 +97,6 @@ socket = io.connect(config.serverString, {
 
 // generate the token
 var my_sas = create_sas_token(my_uri, my_key_name, my_key)
-
 console.log(my_sas);
 
 // the main
@@ -163,46 +139,13 @@ socket.on('connect', function () {
             logger.log('info', 'message received from: ', message.fromUuid);
             logger.log('debug', 'message received: ', message);
 
-            /*
             wait.launchFiber(function () {
-                waiting(message);
+                waiting(JSON.stringify(message));
             });
-            */
             
             // instant send
-            //forward(message)
+            //forward(JSON.stringify(message))
 
-            // Event Hub connection options
-            var hubOptions = {
-                hostname: config.serviceBusNameSpace + '.servicebus.windows.net',
-                port: 443,
-                path: '/' + config.eventHubName + '/publishers/' + config.thisDeviceName + '/messages',
-                method: 'POST',
-                headers: {
-                    'Authorization': my_sas,
-                    'Content-Length': message.length,
-                    'Content-Type': 'application/json;type=entry;charset=utf-8'
-                }
-            };
-
-            logger.log('info', 'Forwarding message to: ' + my_uri);
-
-            var req = https.request(hubOptions, function (res) {
-                logger.log('info', 'statusCode: ' + res.statusCode);
-                logger.log('info', 'headers: ' + res.headers);
-
-                res.on('data', function (d) {
-                    process.stdout.write(d);
-                });
-            });
-
-            req.on('error', function (e) {
-                logger.log('info', error(e));
-            });
-
-            req.write(JSON.stringify(message));
-            req.end();
         });
-
     });
 });
