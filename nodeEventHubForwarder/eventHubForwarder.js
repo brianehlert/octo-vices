@@ -48,7 +48,6 @@ function forward(forwardMess) {
 
     var req = https.request(options, function (res) {
         logger.log('info', 'statusCode: ' + res.statusCode);
-        logger.log('info', 'headers: ' + res.headers);
 
         res.on('data', function (d) {
             process.stdout.write(d);
@@ -68,7 +67,7 @@ function waiting(waitingMess) {
     wait.for(function () {
         setTimeout(function () {
             forward(waitingMess);
-        }, 5000);
+        }, 2000);
 
     });
     logger.log('info', 'fiber end');
