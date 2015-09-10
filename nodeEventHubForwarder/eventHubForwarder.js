@@ -47,7 +47,7 @@ function forward(forwardMess) {
     logger.log('info', 'Forwarding message to: ' + my_uri);
 
     var req = https.request(options, function (res) {
-        //logger.log('info', 'statusCode: ' + res.statusCode);
+        logger.log('debug', 'statusCode: ' + res.statusCode);
 
         res.on('data', function (d) {
             process.stdout.write(d);
@@ -60,17 +60,17 @@ function forward(forwardMess) {
 
     req.write(forwardMess);
     req.end();
+    logger.log('debug', 'forward done');
 }
 
 function waiting(waitingMess) {
-    //logger.log('info', 'fiber start');
+    logger.log('debug', 'starting fiber');
     wait.for(function () {
         setTimeout(function () {
             forward(waitingMess);
-        }, 2000);
+        }, 3000);
 
     });
-    //logger.log('info', 'fiber end');
 }
 
 // Create a SAS token
@@ -96,7 +96,7 @@ socket = io.connect(config.serverString, {
 
 // generate the token
 var my_sas = create_sas_token(my_uri, my_key_name, my_key)
-console.log(my_sas);
+logger.log('info', my_sas);
 
 // the main
 
@@ -116,8 +116,11 @@ socket.on('connect', function () {
 
     socket.on('notReady', function (data) {
         if (data.status == 401) {
-            logger.log('error', 'Device not authenticated with Meshblu');
+            logger.log('info', 'Device not ready. Not authenticated.');
         }
+		else {
+			logger.log('info', 'Device not ready. ', data.status);
+		}
     });
     
     // what to do when websocket connection is in ready state
