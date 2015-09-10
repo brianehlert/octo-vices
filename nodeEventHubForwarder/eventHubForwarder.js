@@ -115,12 +115,8 @@ socket.on('connect', function () {
     });
 
     socket.on('notReady', function (data) {
-        if (data.status == 401) {
-            logger.log('info', 'Device not ready. Not authenticated.');
-        }
-		else {
-			logger.log('info', 'Device not ready. ', data.status);
-		}
+        logger.log('info', 'Device not ready.');
+		logger.log('info', data);
     });
     
     // what to do when websocket connection is in ready state
