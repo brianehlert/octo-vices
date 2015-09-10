@@ -8,7 +8,7 @@ var wait = require('wait.for');
 var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({ level: config.consoleLogLevel, colorize: true }),
-        new (winston.transports.File)({ filename: config.logFile, level: config.logLevel })
+        //new (winston.transports.File)({ filename: config.logFile, level: config.logLevel })
     ]
 });
 
@@ -47,7 +47,7 @@ function forward(forwardMess) {
     logger.log('info', 'Forwarding message to: ' + my_uri);
 
     var req = https.request(options, function (res) {
-        logger.log('info', 'statusCode: ' + res.statusCode);
+        //logger.log('info', 'statusCode: ' + res.statusCode);
 
         res.on('data', function (d) {
             process.stdout.write(d);
@@ -63,14 +63,14 @@ function forward(forwardMess) {
 }
 
 function waiting(waitingMess) {
-    logger.log('info', 'fiber start');
+    //logger.log('info', 'fiber start');
     wait.for(function () {
         setTimeout(function () {
             forward(waitingMess);
         }, 2000);
 
     });
-    logger.log('info', 'fiber end');
+    //logger.log('info', 'fiber end');
 }
 
 // Create a SAS token
