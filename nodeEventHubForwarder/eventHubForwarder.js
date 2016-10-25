@@ -1,5 +1,5 @@
 var config = require('./meshblu.json');
-var io = require('socket.io-client');
+var MeshbluSocketIO = require('meshblu');
 var moment = require('moment');
 var winston = require('winston');
 var wait = require('wait.for');
@@ -90,9 +90,15 @@ function create_sas_token(uri, key_name, key) {
 }
 
 // connect to Meshblu instance
-socket = io.connect(config.serverString, {
-    port: config.port
+var meshblu = new MeshbluSocketIO({
+  resolveSrv: true,
+  uuid: config.uuid,
+  token: config.token
+})
+meshblu.on('ready', function(){
+    logger.log('info', 'Connected to Meshblu');
 });
+meshblu.connect();
 
 // generate the token
 var my_sas = create_sas_token(my_uri, my_key_name, my_key)
@@ -100,50 +106,16 @@ logger.log('info', my_sas);
 
 // the main
 
-socket.on('connect', function () {
-    logger.log('info', 'Requesting websocket connection to Meshblu');
-    
-    socket.on('identify', function (data) {
-        logger.log('info', 'Websocket connecting to Meshblu with socket id: ' + data.socketid);
-        logger.log('info', 'Sending my device uuid: ' + config.uuid);
-        
-        socket.emit('identity', {
-            uuid: config.uuid,
-            socketid: data.socketid,
-            token: config.token
-        });
-    });
+// What to do when I receive a message
+meshblu.on('message', function (message) {
+    // console.log('message received', message);
+    logger.log('info', 'message received from: ', message.fromUuid);
+    logger.log('debug', 'message received: ', message);
 
-    socket.on('notReady', function (data) {
-        logger.log('info', 'Device not ready.');
-		logger.log('info', data);
+    wait.launchFiber(function () {
+        waiting(JSON.stringify(message));
     });
-    
-    // what to do when websocket connection is in ready state
-    socket.on('ready', function (data) {
-        
-        if (data.status == 201) {
-            logger.log('info', 'Device authenticated with Meshblu');
-        }
-            
-        // echo whoami for logging
-        socket.emit('whoami', { "uuid": config.uuid }, function (data) {
-            logger.log('debug', 'who I am: ', data);
-        });
-            
-        // What to do when I receive a message
-        socket.on('message', function (message) {
-            // console.log('message received', message);
-            logger.log('info', 'message received from: ', message.fromUuid);
-            logger.log('debug', 'message received: ', message);
-
-            wait.launchFiber(function () {
-                waiting(JSON.stringify(message));
-            });
             
             // instant send
             //forward(JSON.stringify(message))
-
-        });
-    });
 });
