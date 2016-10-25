@@ -77,8 +77,8 @@ function waiting(waitingMess) {
 // See http://msdn.microsoft.com/library/azure/dn170477.aspx
 
 function create_sas_token(uri, key_name, key) {
-    // Token expires in 48 hours
-    var expiry = Math.floor(new Date().getTime() / 1000 + 3600 * 48);
+    // Token expires in 168 hours / 7 days
+    var expiry = Math.floor(new Date().getTime() / 1000 + 3600 * 168);
 
     var string_to_sign = encodeURIComponent(uri) + '\n' + expiry;
     var hmac = crypto.createHmac('sha256', key);

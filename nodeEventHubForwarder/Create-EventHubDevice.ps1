@@ -12,41 +12,72 @@ $meAuthHeader = @{ meshblu_auth_uuid = '0ae45d40-4f25-11e4-bcdc-518050fe90b4'; m
 #>
 
 
-## create an array to hold the device definitions
-$deviceDefinition = @()
-## create a json devices array to hold the faux devices
-$Devices = @'
-{ "nodes" : [] }
-'@ | ConvertFrom-Json
+# define permissions
+$user = @()
+$user += @{ uuid = $meAuthHeader.meshblu_auth_uuid }
 
-## define a security array of 'anyone'
 $anyone = @()
-$anyone += '*'
+$anyone += @{ uuid = '*' }
 
-## build the devices
+$empty = @()
+
+$configureWhitelist = @{
+    as = $empty;
+    received = $empty;
+    sent = $empty;
+    update = $user
+}
+
+$message = @{
+    as = $empty;
+    received = $empty;
+    sent = $anyone
+}
+
+$discover = @{
+    as = $empty;
+    view = $user
+}
+
+$broadcast = @{
+    as = $empty;
+    received = $anyone;
+    sent = $anyone
+}
+
+$whitelists = @{
+    configure = $configureWhitelist;
+    message = $message;
+    discover = $discover;
+    broadcast = $broadcast
+}
+
+$meshblu = @{
+    version = "2.0.0";
+    whitelists = $whitelists;
+}
+
+
+## build the device
 
 # Event Hub Forwarder Device
-$deviceDefinition += @{
-    "owner" = $meAuthHeader.meshblu_auth_uuid
-    "configureWhitelist" = $meAuthHeader.meshblu_auth_uuid
-    "discoverWhitelist" = $meAuthHeader.meshblu_auth_uuid
-    "receiveWhitelist" = $anyone
-    "sendWhitelist" = $anyone
+$body = @{
+    online = $true;
+    owner = $meAuthHeader.meshblu_auth_uuid;
     type = "device:msfteventhub";
+    logo = "https://azurecomcdn.azureedge.net/cvt-032cae4daf6b97d2790fc67abda30d01fac0dc73e4d78f898146e5fa83074794/images/page/services/event-hubs/stream.png";
     name = "Azure Event Hub Forwarder"; 
-    online = "true";
-    logo = "http://acom.azurecomcdn.net/80C57D/cdn/images/cvt-032cae4daf6b97d2790fc67abda30d01fac0dc73e4d78f898146e5fa83074794/page/services/event-hubs/stream.png";
-    locale = ""
+    meshblu = $meshblu
 }
 
-### Create the devices
-foreach ($body in $deviceDefinition) {
-    # convert to json
-    $json_body = $body | ConvertTo-Json
 
-    # create the device
-    $Devices.nodes += Invoke-RestMethod -URI http://meshblu.octoblu.com/devices -ContentType "application/json" -body $json_body -Method Post
-}
+### Create the device
+$json_body = $body | ConvertTo-Json -Depth 99
+
+### create the device
+#$device = Invoke-RestMethod -URI http://meshblu-http.hpe.octoblu.com/devices -ContentType "application/json" -body $json_body -Method Post
+$device = Invoke-RestMethod -URI http://meshblu-http.octoblu.com/devices -ContentType "application/json" -body $json_body -Method Post
 
 ###  Save the devices to a file
-ConvertTo-Json $Devices -Depth 999 | Out-File -FilePath .\EventHubForwarders.json
+$device | ConvertTo-Json -Depth 99 | Out-File -FilePath .\EventHubForwarder.json
+

@@ -7,11 +7,11 @@
     "deviceName": "EventHubForwarder",
     "uuid": "1d8acee3-1e08-4c7f-9d9e-d4a579aee144",
     "token": "b485acd3fdddaafadd81b8c4ebdecc4672a94c2c",
-    "serviceBusNameSpace": "octodemo",
-    "eventHubName": "demo1",
-    "thisDeviceName": "forwarder1",
+    "serviceBusNameSpace": "brianehdemo",
+    "eventHubName": "mtm",
+    "thisDeviceName": "mtm1",
     "eventHubAccessPolicyName": "sender",
-    "eventHubAccessPolicyKey": "wWC2MvBxFBVfFWYJWZNF8IhHN55yGzq8jFamYfdIWeA=",
+    "eventHubAccessPolicyKey": "dfGbEX4UabzqwR63zYi2MEUBBbb2n/ae0jUu0ZlrRmc=",
 
     "glossary": {
         "title": "the glossary",

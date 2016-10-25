@@ -1,6 +1,6 @@
 {
   "name": "EventHubForwarder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Meshblu forwarder to Azure Event Hub",
   "main": "eventHubForwarder.js",
   "scripts": {
