@@ -13,82 +13,46 @@ var logger = new (winston.Logger)({
     ]
 });
 
-// Event Hub connection setup
-var https = require('https');
-var crypto = require('crypto');
+// Create or Connect to the queue
+// https://azure.microsoft.com/en-us/documentation/articles/service-bus-nodejs-how-to-use-queues/
 
-// Event Hubs parameters
-var namespace = config.serviceBusNameSpace;
-var hubname = config.eventHubName;
-var devicename = config.thisDeviceName;
+logger.log('info', 'Connecting to Service Bus');
+var serviceBusClient = azure.createServiceBusService(config.serviceBusNameSpace, config.serviceBusAccessKey);
 
-// Shared access key (from Event Hub configuration)
-var my_key_name = config.eventHubAccessPolicyName;
-var my_key = config.eventHubAccessPolicyKey;
-
-// Full Event Hub publisher URI
-//var my_uri = 'https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages';
+serviceBusClient.createQueueIfNotExists(config.eventHubName, function(error){
+    if(!error){
+        logger.log('info', 'Service Bus message queue exists');
+    } else {
+        logger.log('info', error );
+    }
+});
 
 // the functions
 
 // Send the message to the Event Hub
-function forward(forwardMess) {
-    var options = {
-        hostname: config.serviceBusNameSpace + '.servicebus.windows.net',
-        port: 443,
-        path: '/' + config.eventHubName + '/publishers/' + config.thisDeviceName + '/messages',
-        method: 'POST',
-        headers: {
-            'Authorization': my_sas,
-            'Content-Length': forwardMess.length,
-            'Content-Type': 'application/json;type=entry;charset=utf-8'
-        }
-    };
-
-    logger.log('info', 'Forwarding message to: ' + my_uri);
-
-    var req = https.request(options, function (res) {
-        logger.log('debug', 'statusCode: ' + res.statusCode);
-
-        res.on('data', function (d) {
-            process.stdout.write(d);
+function sendMessage(message) {
+    serviceBusClient.sendQueueMessage(config.eventHubName, message ,
+        function(error) {
+            if (error) {
+                logger.log('info', error);
+            }
+            else
+            {
+                logger.log('info', 'Message sent to queue');
+            }
         });
-    });
-
-    req.on('error', function (e) {
-        logger.log('info', error(e));
-    });
-
-    req.write(forwardMess);
-    req.end();
-    logger.log('debug', 'forward done');
 }
 
 function waiting(waitingMess) {
     logger.log('debug', 'starting fiber');
     wait.for(function () {
         setTimeout(function () {
-            forward(waitingMess);
+            sendMessage(waitingMess);
         }, 3000);
 
     });
 }
 
-// Create a SAS token
-// See http://msdn.microsoft.com/library/azure/dn170477.aspx
-
-function create_sas_token(uri, key_name, key) {
-    // Token expires in 168 hours / 7 days
-    var expiry = Math.floor(new Date().getTime() / 1000 + 3600 * 168);
-
-    var string_to_sign = encodeURIComponent(uri) + '\n' + expiry;
-    var hmac = crypto.createHmac('sha256', key);
-    hmac.update(string_to_sign);
-    var signature = hmac.digest('base64');
-    var token = 'SharedAccessSignature sr=' + encodeURIComponent(uri) + '&sig=' + encodeURIComponent(signature) + '&se=' + expiry + '&skn=' + key_name;
-
-    return token;
-}
 
 // connect to Meshblu instance
 var meshblu = new MeshbluSocketIO({
@@ -101,22 +65,18 @@ meshblu.on('ready', function(){
 });
 meshblu.connect();
 
-// generate the token
-var my_sas = create_sas_token(my_uri, my_key_name, my_key)
-logger.log('info', my_sas);
 
 // the main
 
-// What to do when I receive a message
+// What to do when I receive a message from Meshblu
 meshblu.on('message', function (message) {
-    // console.log('message received', message);
     logger.log('info', 'message received from: ', message.fromUuid);
     logger.log('debug', 'message received: ', message);
 
-    wait.launchFiber(function () {
-        waiting(JSON.stringify(message));
-    });
+    //wait.launchFiber(function () {
+    //    waiting(JSON.stringify(message));
+    //});
             
-            // instant send
-            //forward(JSON.stringify(message))
+    // instant send
+    sendMessage(JSON.stringify(message));
 });

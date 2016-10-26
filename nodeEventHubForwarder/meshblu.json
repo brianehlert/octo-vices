@@ -11,7 +11,7 @@
     "eventHubName": "mtm",
     "thisDeviceName": "mtm1",
     "eventHubAccessPolicyName": "sender",
-    "eventHubAccessPolicyKey": "dfGbEX4UabzqwR63zYi2MEUBBbb2n/ae0jUu0ZlrRmc=",
+    "serviceBusAccessKey": "dfGbEX4UabzqwR63zYi2MEUBBbb2n/ae0jUu0ZlrRmc=",
 
     "glossary": {
         "title": "the glossary",
