@@ -3,6 +3,7 @@ var MeshbluSocketIO = require('meshblu');
 var moment = require('moment');
 var winston = require('winston');
 var wait = require('wait.for');
+var azure = require('azure');
 
 // winston setup
 var logger = new (winston.Logger)({
@@ -26,7 +27,7 @@ var my_key_name = config.eventHubAccessPolicyName;
 var my_key = config.eventHubAccessPolicyKey;
 
 // Full Event Hub publisher URI
-var my_uri = 'https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages';
+//var my_uri = 'https://' + namespace + '.servicebus.windows.net' + '/' + hubname + '/publishers/' + devicename + '/messages';
 
 // the functions
 
