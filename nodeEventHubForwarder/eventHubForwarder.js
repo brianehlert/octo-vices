@@ -17,7 +17,7 @@ var logger = new (winston.Logger)({
 // https://azure.microsoft.com/en-us/documentation/articles/service-bus-nodejs-how-to-use-queues/
 
 logger.log('info', 'Connecting to Service Bus');
-var serviceBusClient = azure.createServiceBusService(config.serviceBusNameSpace, config.serviceBusAccessKey);
+var serviceBusClient = azure.createServiceBusService(config.serviceBusConnectionString);
 
 serviceBusClient.createQueueIfNotExists(config.eventHubName, function(error){
     if(!error){

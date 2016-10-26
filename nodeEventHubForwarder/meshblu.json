@@ -9,7 +9,7 @@
     "token": "b485acd3fdddaafadd81b8c4ebdecc4672a94c2c",
     "serviceBusNameSpace": "brianehdemo",
     "eventHubName": "mtm",
-    //"thisDeviceName": "mtm1",
+    "thisDeviceName": "mtm1",
     //"eventHubAccessPolicyName": "sender",
     "serviceBusAccessKey": "dfGbEX4UabzqwR63zYi2MEUBBbb2n/ae0jUu0ZlrRmc=",
     "serviceBusConnectionString": "Endpoint=sb://brianehdemo.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=dfGbEX4UabzqwR63zYi2MEUBBbb2n/ae0jUu0ZlrRmc=",
