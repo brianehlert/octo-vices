@@ -31,7 +31,7 @@ serviceBusClient.createQueueIfNotExists(config.eventHubName, function(error){
 
 // Send the message to the Event Hub
 function sendMessage(message) {
-    serviceBusClient.sendQueueMessage(config.eventHubName, message ,
+    serviceBusClient.sendQueueMessage(config.eventHubName, message,
         function(error) {
             if (error) {
                 logger.log('info', error);
@@ -60,23 +60,25 @@ var meshblu = new MeshbluSocketIO({
   uuid: config.uuid,
   token: config.token
 })
-meshblu.on('ready', function(){
-    logger.log('info', 'Connected to Meshblu');
-});
+
+// connect to Meshblu
 meshblu.connect();
 
+meshblu.on('ready', function(){
+    logger.log('info', 'Connected to Meshblu');
 
-// the main
+    // What to do when I receive a message from Meshblu
+    meshblu.on('message', function (message) {
+        logger.log('info', 'message received from: ', message.fromUuid);
+        logger.log('debug', 'message received: ', message);
 
-// What to do when I receive a message from Meshblu
-meshblu.on('message', function (message) {
-    logger.log('info', 'message received from: ', message.fromUuid);
-    logger.log('debug', 'message received: ', message);
+        //wait.launchFiber(function () {
+        //    waiting(JSON.stringify(message));
+        //});
+                
+        // instant send
+        sendMessage(JSON.stringify(message));
+    });
 
-    //wait.launchFiber(function () {
-    //    waiting(JSON.stringify(message));
-    //});
-            
-    // instant send
-    sendMessage(JSON.stringify(message));
 });
+
