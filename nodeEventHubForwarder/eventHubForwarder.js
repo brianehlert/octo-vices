@@ -66,19 +66,17 @@ meshblu.connect();
 
 meshblu.on('ready', function(){
     logger.log('info', 'Connected to Meshblu');
-
-    // What to do when I receive a message from Meshblu
-    meshblu.on('message', function (message) {
-        logger.log('info', 'message received from: ', message.fromUuid);
-        logger.log('debug', 'message received: ', message);
-
-        //wait.launchFiber(function () {
-        //    waiting(JSON.stringify(message));
-        //});
-                
-        // instant send
-        sendMessage(JSON.stringify(message));
-    });
-
 });
 
+// What to do when I receive a message from Meshblu
+meshblu.on('message', function (message) {
+    logger.log('info', 'message received from: ', message.fromUuid);
+    logger.log('debug', 'message received: ', message);
+
+    //wait.launchFiber(function () {
+    //    waiting(JSON.stringify(message));
+    //});
+            
+    // instant send
+    sendMessage(JSON.stringify(message));
+});
